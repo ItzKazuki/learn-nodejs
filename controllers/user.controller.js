@@ -1,4 +1,6 @@
 const db = require('./../models');
+const jwt = require('jsonwebtoken');
+const { user } = require('./../models');
 const User = db.user;
 
 exports.allAccess = (req, res) => {
@@ -14,10 +16,11 @@ exports.moderatorBoard = (req, res) => {
     res.status(200).send("Moderator Content.");
 };
 exports.userProfile = (req, res) => {
-    console.log(User.email)
+    const userName = jwt.decode(req.headers["x-access-token"]);
+    console.log(userName)
     User.findOne({
         where: {
-            username: req.body.username
+            id: userName.id
         }
     }).then(user => {
         var authorities = [];
