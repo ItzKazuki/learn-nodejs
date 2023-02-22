@@ -6,13 +6,14 @@
 
 var app = require('../index');
 var http = require('http');
+const config = require('../config/app.config');
 require('dotenv').config();
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || process.env.S_PORT);
+var port = (config.APP_ENV == 'production' ? 80 : normalizePort(process.env.PORT));
 app.set('port', port);
 
 /**
@@ -86,6 +87,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  //debug('Listening on ' + bind);
-  console.log('[√] Listening on port ' + port)
+  console.log('Listening on ' + bind);
+  console.log('[√] Listening on port ' + port);
 }
