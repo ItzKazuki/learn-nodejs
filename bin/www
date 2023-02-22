@@ -13,7 +13,7 @@ require('dotenv').config();
  * Get port from environment and store in Express.
  */
 
-var port = (config.APP_ENV == 'production' ? 80 : normalizePort(process.env.PORT));
+var port = getProduction();
 app.set('port', port);
 
 /**
@@ -33,6 +33,14 @@ server.on('listening', onListening);
 /**
  * Normalize a port into a number, string, or false.
  */
+
+function getProduction() {
+    if (config.APP_ENV == 'production') {
+        return 80;
+    } else {
+        return normalizePort(config.PORT);
+    }
+}
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -87,6 +95,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log('Listening on ' + bind);
-  console.log('[√] Listening on port ' + port);
+  // console.log('Listening on ' + bind);
+  //
+  console.log(`[√] Listening on port ${bind}`);
 }

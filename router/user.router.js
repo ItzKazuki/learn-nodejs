@@ -1,5 +1,6 @@
 const { authJwt } = require('./../middleware');
 const controller = require('./../controllers/user.controller');
+const adminController = require('../controllers/admin/user.controller');
 
 module.exports = (app) => {
     app.use((req, res, next) => {
@@ -29,5 +30,10 @@ module.exports = (app) => {
         '/api/user/profile',
         [authJwt.verifyToken],
         controller.userProfile
-    )
+    );
+    app.post(
+        '/api/user/updateUsername',
+        [authJwt.verifyToken],
+        adminController.updateUsername
+    );
 };

@@ -1,4 +1,5 @@
-const db = require('./../models');
+const db = require('../module/db');
+const mailer = require('../module/mail');
 const config = require('./../config/auth.config');
 const User = db.user;
 const Role = db.role;
@@ -53,11 +54,23 @@ const login = (req, res) => {
 };
 
 const register = (req, res) => {
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+    console.log(username);
+
+    if (username == undefined || email == undefined || password == undefined) {
+        res.status(500).send('tolong masukan parameter dengan benar username, email, password!');
+    }
+
     User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8)
+        username: username,
+        email: email,
+        password: bcrypt.hashSync(password, 8)
     }).then(user => {
+        mailer.sendMail(email, 'Successfuly registerd', 'your account has saved in database!').catch(err => {
+            res.send({ message: err.message });
+        });
         if (req.body.roles) {
             Role.findAll({
                 where: {
