@@ -1,6 +1,5 @@
-const db = require('./../models');
+const db = require('../module/db');
 const jwt = require('jsonwebtoken');
-const { user } = require('./../models');
 const User = db.user;
 
 exports.allAccess = (req, res) => {
@@ -17,7 +16,6 @@ exports.moderatorBoard = (req, res) => {
 };
 exports.userProfile = (req, res) => {
     const userName = jwt.decode(req.headers["x-access-token"]);
-    console.log(userName)
     User.findOne({
         where: {
             id: userName.id
@@ -28,14 +26,18 @@ exports.userProfile = (req, res) => {
             for (let i = 0; i < roles.length; i++) {
                 authorities.push("ROLE_" + roles[i].name.toUpperCase());
             }
+            // let dateTime = new Date(user.createdAt);
+            // dateTime.toLocaleDateString('id-ID', {weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric'})
             res.status(200).send({
                 id: user.id,
                 username: user.username,
                 email: user.email,
-                roles: authorities
+                roles: authorities,
+                created_at: user.createdAt,
+                update_at: user.updatedAt
             });
         });
     }).catch(err => {
         res.status(500).send({ message: err.message });
     });
-}
+};
